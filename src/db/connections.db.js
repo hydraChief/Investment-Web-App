@@ -1,11 +1,11 @@
 const sql= require('mysql')
 
-const dbConnections =  mysql.createPool({
+const dbConnections =  sql.createPool({
     connectionLimit : 10,
     host     : 'localhost',
     user     : 'root',
     password : 'n3u3da!',
-    database : 'hydra'
+    database : 'investment_db',
   });
 
 module.exports = dbConnections;

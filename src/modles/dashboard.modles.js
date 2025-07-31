@@ -1,4 +1,4 @@
-const dbConnection = require('../db/db.connections');
+const dbConnection = require('../db/connections.db');
 
 const getInvestmentDistributionModel = async () => {
 };

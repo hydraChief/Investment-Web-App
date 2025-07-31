@@ -1,0 +1,59 @@
+const dbConn = require('../db/connections.db');
+const executeQueries = require('./utility.migrations');
+async function runMigrations() {
+  try {
+    const queries = [
+      `
+        CREATE TABLE IF NOT EXISTS users (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          passwd VARCHAR(255) NOT NULL,
+          name VARCHAR(100) NOT NULL
+        );
+      `,
+      `
+       CREATE TABLE IF NOT EXISTS investments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        price_per_unit INT NOT NULL,
+        total_amount INT NOT NULL,
+        total_units INT NOT NULL,
+        company_name VARCHAR(255) NOT NULL,
+        transaction_time DATETIME NOT NULL,
+        type ENUM('buy', 'sell') NOT NULL,  -- New 'type' column
+        CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+          ON DELETE CASCADE
+          ON UPDATE CASCADE
+      );
+      `
+    ];
+
+    const results = await executeQueries(dbConn,queries);
+
+    // Logging the results from all queries
+    results.forEach((res, index) => {
+      console.log(`Query ${index + 1} executed successfully:`, res);
+    });
+
+  } catch (error) {
+    console.error('Migration failed:', error);
+  } finally {
+    console.log('Migration process completed.');
+  }
+}
+
+// Run migrations if this file is executed directly
+if (require.main === module) {
+  console.log('Running migrations...');
+  runMigrations().then(() => {
+    console.log('Migrations completed successfully.');
+    if (process.argv.includes('--end')) {
+      dbConn.end(() => {
+        console.log('Database connection closed.');
+      });
+      process.exit(0);
+    }
+  });
+}
+
+module.exports = runMigrations;
