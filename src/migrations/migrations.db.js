@@ -6,6 +6,7 @@ async function runMigrations() {
       `
         CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
+          demate_account_number VARCHAR(20) NOT NULL UNIQUE,
           email VARCHAR(255) NOT NULL UNIQUE,
           passwd VARCHAR(255) NOT NULL,
           name VARCHAR(100) NOT NULL
@@ -19,8 +20,9 @@ async function runMigrations() {
         total_amount INT NOT NULL,
         total_units INT NOT NULL,
         company_name VARCHAR(255) NOT NULL,
-        transaction_time DATETIME NOT NULL,
-        type ENUM('buy', 'sell') NOT NULL,  -- New 'type' column
+        transaction_date DATE NOT NULL,      
+        transaction_time TIME NOT NULL,    
+        type ENUM('buy', 'sell') NOT NULL,
         CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
           ON DELETE CASCADE
           ON UPDATE CASCADE
