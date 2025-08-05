@@ -1,19 +1,22 @@
 const dashboardModel = require('../modles/dashboard.modles');
 
-async function getDashboardAmountData(req, res) {
-  dashboardModel.getInvestmentDistributionModel()
+function getDashboardCountData(req, res) {
+  dashboardModel.getInvestmentDistributionModel(req.body.userId)
     .then(data => {
+      if(data.error){
+        throw new Error(data.error);
+      }
       console.log('Investment Distribution Data by Units:', data);
       res.status(200).json(data);
     })
     .catch(err => {
-      console.error('Error fetching investment distribution data:', err);
+      console.log('Error fetching investment distribution data:', err);
       res.status(500).json({ error: 'Failed to fetch investment distribution data' });
     });
 }
 
-async function getDashboardCountData(req, res) {
-  await dashboardModel.getInvestmentDistributionModel()
+async function getDashboardAmountData(req, res) {
+  await dashboardModel.getInvestmentDistributionModel(req.body.userId)
     .then(data => {
       data = data.map(async item => {
       // Fetching the price per unit for each company using an external API
@@ -37,8 +40,10 @@ async function getDashboardCountData(req, res) {
     });
 }
 
-async function getDateSeriesDataforUnitsBoughtSold(user, companyName) {
-  dashboardModel.getDateSeriesDataforUnitsBoughtSoldModel(user, companyName)
+async function getDateSeriesDataforUnitsBoughtSold(req, res) {
+  const { userId } = req.body;
+  const companyName = req.query.companyName;
+  dashboardModel.getDateSeriesDataforUnitsBoughtSoldModel(userId, companyName)
   .then(data => {
     console.log('Aggregated date series data for each company', data);
     res.status(200).json(data);
@@ -51,8 +56,9 @@ async function getDateSeriesDataforUnitsBoughtSold(user, companyName) {
 
 
 // This function aggregates the date series data for all companies
-async function getDateSeriesDataforAllUnitsBoughtSold(user) {
-  dashboardModel.getDateSeriesDataforAllUnitsBoughtSoldModel(user)
+async function getDateSeriesDataforAllUnitsBoughtSold(req,res) {
+  const { userId } = req.body;
+  dashboardModel.getDateSeriesDataforAllUnitsBoughtSoldModel(userId)
   .then(data => {
     console.log('Aggregated date series data for all companies', data);
     res.status(200).json(data);

@@ -1,6 +1,7 @@
 const dbConnection = require('../db/connections.db');
 
-const getInvestmentDistributionModel = async (user) => {
+const getInvestmentDistributionModel = async (userId) => {
+    console.log('Fetching investment distribution data for user:', userId);
     let query = `
         SELECT 
             company_name,
@@ -10,30 +11,31 @@ const getInvestmentDistributionModel = async (user) => {
         WHERE user_id = ?
         GROUP BY company_name
         HAVING units_remaining > 0;`
-    dbConnection.query(query, (error, results) => {
-        if (error) {
-            throw error;
-        }
-        return results;
-    });
+    try {
+        const [rows] = await dbConnection.promise().query(query, [userId]);
+        return rows;
+    } catch (error) {
+        console.error('Error fetching investment distribution data:', error);
+        throw error;
+    }
 };
 
 const getInvestmentDistributionByAmountModel = async (user) => {
 }
 
-const getDateSeriesDataforAllUnitsBoughtSoldModel = async (user) => {
+const getDateSeriesDataforAllUnitsBoughtSoldModel = async (userId) => {
     let query = `
             WITH RECURSIVE date_series AS (
             SELECT MIN(transaction_date) AS dt
             FROM investments
-            WHERE user_id = 123
+            WHERE user_id = ?
             UNION ALL
             SELECT DATE_ADD(dt, INTERVAL 1 DAY)
             FROM date_series
-            WHERE dt < (SELECT MAX(transaction_date) FROM investments WHERE user_id = 123)
+            WHERE dt < (SELECT MAX(transaction_date) FROM investments WHERE user_id = ?)
         ),
         companies AS (
-            SELECT DISTINCT company_name FROM investments WHERE user_id = 123
+            SELECT DISTINCT company_name FROM investments WHERE user_id = ?
         ),
         types AS (
             SELECT 'buy' AS type
@@ -60,16 +62,18 @@ const getDateSeriesDataforAllUnitsBoughtSoldModel = async (user) => {
             ON i.transaction_date = ctd.transaction_date
         AND i.company_name = ctd.company_name
         AND i.type = ctd.type
-        AND i.user_id = 123
+        AND i.user_id = ?
+        WHERE total_units > 0
         GROUP BY ctd.transaction_date, ctd.company_name, ctd.type
         ORDER BY ctd.transaction_date, ctd.company_name, ctd.type;
 `
-    dbConnection.query('SELECT * FROM investments', (error, results) => {
-        if (error) {
-            throw error;
-        }
-        return results;
-    });
+    try {
+        const [rows] = await dbConnection.promise().query(query, [userId,userId,userId,userId]);
+        return rows;
+    } catch (error) {
+        console.error('Error fetching investment distribution data:', error);
+        throw error;
+    }
 }
 
 //this is for particular company
@@ -78,11 +82,11 @@ const getDateSeriesDataforUnitsBoughtSoldModel= async (user,comapanyNmme) => {
             WITH RECURSIVE date_series AS (
             SELECT MIN(transaction_date) AS dt
             FROM investments
-            WHERE user_id = 123 AND company_name = 'Tesla'
+            WHERE user_id = ? AND company_name = 'Tesla'
             UNION ALL
             SELECT DATE_ADD(dt, INTERVAL 1 DAY)
             FROM date_series
-            WHERE dt < (SELECT MAX(transaction_date) FROM investments WHERE user_id = 123 AND company_name = 'Tesla')
+            WHERE dt < (SELECT MAX(transaction_date) FROM investments WHERE user_id = ? AND company_name = 'Tesla')
         ),
         types AS (
             SELECT 'buy' AS type
@@ -106,7 +110,7 @@ const getDateSeriesDataforUnitsBoughtSoldModel= async (user,comapanyNmme) => {
         LEFT JOIN investments i
             ON i.transaction_date = ctd.transaction_date
         AND i.type = ctd.type
-        AND i.user_id = 123
+        AND i.user_id = ?
         AND i.company_name = 'Tesla'
         GROUP BY ctd.transaction_date, ctd.type
         ORDER BY ctd.transaction_date, ctd.type;
@@ -114,5 +118,6 @@ const getDateSeriesDataforUnitsBoughtSoldModel= async (user,comapanyNmme) => {
 }
 module.exports = {
     getInvestmentDistributionModel,
-    getInvestmentDistributionByAmountModel
+    getInvestmentDistributionByAmountModel,
+    getDateSeriesDataforAllUnitsBoughtSoldModel
 };

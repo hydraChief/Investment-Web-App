@@ -27,6 +27,10 @@ async function runMigrations() {
           ON DELETE CASCADE
           ON UPDATE CASCADE
       );
+      `,
+      `
+      INSERT INTO users (demate_account_number, email, passwd, name)
+      VALUES ('123456789', 'rk@gmail.com', '123', 'Ronak kumar');
       `
     ];
 

@@ -1,11 +1,12 @@
-const sql= require('mysql')
-
+const sql= require('mysql2')
+const dotenv = require('dotenv');
+dotenv.config();
 const dbConnections =  sql.createPool({
     connectionLimit : 10,
-    host     : 'localhost',
-    user     : 'root',
-    password : 'n3u3da!',
-    database : 'investment_db',
+    host     : process.env.DB_HOST,
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DB_NAME,
   });
 
 module.exports = dbConnections;
