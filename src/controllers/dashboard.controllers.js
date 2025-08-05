@@ -1,4 +1,4 @@
-const dashboardModel = require('../models/dashboard.models');
+const dashboardModel = require('../modles/dashboard.modles');
 
 async function getDashboardAmountData(req, res) {
   dashboardModel.getInvestmentDistributionModel()

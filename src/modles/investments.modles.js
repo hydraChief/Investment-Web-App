@@ -3,13 +3,14 @@ const dbConnection = require('../db/connections.db');
 const addInvestmentModel = async (investmentData) => {
     const { companyName, units, price, type, userId } = investmentData;
     const query = `
-        INSERT INTO investments (company_name, total_units, total_amount, type, user_id, transaction_date, transaction_time)
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW());
+        INSERT INTO investments (price_per_unit,company_name, total_units, total_amount, type, user_id, transaction_date, transaction_time)
+        VALUES (?,?, ?, ?, ?, ?, ?, NOW());
     `;
-    dbConnection.query(query, [companyName, units, price * units, type, userId, new Date().toISOString().split('T')[0]], (error, results) => {
+    dbConnection.query(query, [price,companyName, units, price * units, type, userId, new Date().toISOString().split('T')[0]], (error, results) => {
         if (error) {
             throw error;
         }
+        console.log('Investment added successfully:', results);
         return results;
     });
 }
