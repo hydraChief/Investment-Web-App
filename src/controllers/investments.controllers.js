@@ -1,4 +1,4 @@
-const investmentModel = require('../modles/investments.modles');
+const investmentModel = require('../modles/investments.models');
 
 function addInvestment(req, res) {
     const investmentData = req.body;

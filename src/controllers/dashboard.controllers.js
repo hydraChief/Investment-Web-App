@@ -1,4 +1,4 @@
-const dashboardModel = require('../modles/dashboard.modles');
+const dashboardModel = require('../modles/dashboard.models');
 
 function getDashboardCountData(req, res) {
   dashboardModel.getInvestmentDistributionModel(req.body.userId)

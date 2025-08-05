@@ -28,8 +28,21 @@ async function runMigrations() {
           ON UPDATE CASCADE
       );
       `,
+      `CREATE TABLE IF NOT EXISTS bonds (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        bond_symbol VARCHAR(20) NOT NULL,
+        bond_name VARCHAR(255) NOT NULL,
+        price_per_unit DECIMAL(15,2) NOT NULL,
+        total_units INT NOT NULL,
+        total_amount DECIMAL(15,2) NOT NULL,
+        type ENUM('buy','sell') NOT NULL,
+        user_id INT NOT NULL,
+        transaction_date DATE NOT NULL,
+        transaction_time TIME NOT NULL
+      );
+      `,
       `
-      INSERT INTO users (demate_account_number, email, passwd, name)
+      INSERT IGNORE INTO users (demate_account_number, email, passwd, name)
       VALUES ('123456789', 'rk@gmail.com', '123', 'Ronak kumar');
       `
     ];
