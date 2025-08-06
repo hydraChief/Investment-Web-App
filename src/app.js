@@ -9,5 +9,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/investments',auth, require('./routes/investments.routes'));
 app.use('/api/dashboard',auth, require('./routes/dashboard.routes'));
 app.use('/api/bonds',auth, require('./routes/bonds.routes'));
+app.use('/api/metals',auth, require('./routes/metals.routes'));
 
 module.exports=app;

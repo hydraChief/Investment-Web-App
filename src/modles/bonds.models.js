@@ -117,7 +117,7 @@ const getDateSeriesDataforAllBondsBoughtSoldModel = async (userId) => {
         ORDER BY btd.transaction_date, btd.bond_name, btd.type;
     `;
     try {
-        const [rows] = await dbConnection.promise().query(query, [
+        const [rows] = await db.promise().query(query, [
             userId,
             userId,
             userId,

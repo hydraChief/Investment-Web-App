@@ -1,4 +1,4 @@
-const { addBondModel, getOwnedBondsModel, sellBondModel } = require('../modles/bonds.models');
+const { addBondModel, getOwnedBondsModel, sellBondModel, getDateSeriesDataforAllBondsBoughtSoldModel } = require('../modles/bonds.models');
 const yahooFinance = require('yahoo-finance2').default;
 
 // POST /api/bonds/add
@@ -54,7 +54,9 @@ async function getBondPrices(req, res) {
                 bond_name: b.bond_name,
                 units_remaining: b.units_remaining,
                 current_price: price,
-                total_amount: price * b.units_remaining
+                total_amount: price * b.units_remaining,
+                previous_price: b.price || 0,
+                previous_total_amount: b.total_amount || 0,
             };
         });
 
@@ -68,7 +70,7 @@ async function getBondPrices(req, res) {
 async function getDateSeriesDataforAllBondsBoughtSold(req, res) {
   const { userId } = req.body;
   
-  bondsDashboardModel.getDateSeriesDataforAllBondsBoughtSoldModel(userId)
+  getDateSeriesDataforAllBondsBoughtSoldModel(userId)
     .then(data => {
       console.log('Aggregated date series data for all bonds', data);
       res.status(200).json(data);
