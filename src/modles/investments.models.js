@@ -1,5 +1,5 @@
 const dbConnection = require('../db/connections.db');
-
+//inserting stocks into db
 const addInvestmentModel = async (investmentData) => {
     const { companyName, units, price, type, userId } = investmentData;
     const query = `
