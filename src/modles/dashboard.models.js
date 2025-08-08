@@ -22,7 +22,7 @@ const getInvestmentDistributionModel = async (userId) => {
 
 const getInvestmentDistributionByAmountModel = async (user) => {
 }
-
+//returns daily data for each type of investment (buy/sell) per company
 const getDateSeriesDataforAllUnitsBoughtSoldModel = async (userId) => {
     let query = `
             WITH RECURSIVE date_series AS (
