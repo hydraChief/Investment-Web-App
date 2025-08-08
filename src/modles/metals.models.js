@@ -99,7 +99,7 @@ const getDateSeriesDataforAllMetalsBoughtSoldModel = async (userId) => {
                 t.type
             FROM date_series d
             CROSS JOIN metals_list m
-            CROSS JOIN types b
+            CROSS JOIN types t
         )
         SELECT 
             mtd.transaction_date,
